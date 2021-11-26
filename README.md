@@ -1,5 +1,6 @@
 # MediaWiki OAuth2 Client
-MediaWiki implementation of the PHP League's [OAuth2 Client](https://github.com/thephpleague/oauth2-client), to allow MediaWiki to act as a client to any OAuth2 server. Currently maintained by [Schine GmbH](https://www.star-made.org/).
+MediaWiki implementation of the PHP League's [OAuth2 Client](https://github.com/thephpleague/oauth2-client), to allow MediaWiki to act as a client to any OAuth2 server.
+Based on the awesome repository from [Schine GmbH](https://www.star-made.org/).
 
 Requires MediaWiki 1.25+.
 
@@ -60,7 +61,7 @@ $wgOAuth2Client['configuration']['email'] = 'user.email'; // JSON path to email
 
 You can see [Json Helper Test case](./tests/phpunit/JsonHelperTest.php) for more.
 
-The user's real name will be set to the username by default.
+The **user's real name** will be set to the username by default.
 Depending on what you get from your backend, you may also want to configure:
 ```
 $wgOAuth2Client['configuration']['real_name'] = 'realname'; // JSON path to real name
@@ -71,7 +72,8 @@ $wgOAuth2Client['configuration']['first_name'] = 'first_name'; // JSON path to f
 $wgOAuth2Client['configuration']['last_name'] = 'last_name'; // JSON path to last name
 ```
 
-The **Redirect URI** for your wiki should be:
+The **Redirect URI** for your wiki should looking like this.
+Please make sure, that mediawiki localizes `Special`, so you have to adapt it to your chosen language.
 
 ```
 http://your.wiki.domain/path/to/wiki/Special:OAuth2Client/callback
