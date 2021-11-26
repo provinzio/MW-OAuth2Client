@@ -207,14 +207,32 @@ class SpecialOAuth2Client extends SpecialPage {
 		}
 		$user->setToken();
 
+		if (isset($wgOAuth2Client['configuration']['group_id_as_sum_of_powers_of_two'])) {
+			$group_as_power_of_two = $wgOAuth2Client['configuration']['group_id_as_sum_of_powers_of_two'];
+		} else {
+			$group_as_power_of_two = False;
+		}
+
 		// Assign group if configured
-		if(array_key_exists('group', $wgOAuth2Client['configuration'])) {
+		if (isset($wgOAuth2Client['configuration']['group']) && isset($wgOAuth2Client['configuration']['group_mapping'])) {
 			$group = JsonHelper::extractValue($response, $wgOAuth2Client['configuration']['group']);
-			// Lookup if this group is mapped
-			if(array_key_exists($group, $wgOAuth2Client['configuration']['group_mapping'])) {
-				$wikiGroup = $wgOAuth2Client['configuration']['group_mapping'][$group];
-				if(!in_array($wikiGroup, $user->getGroups())) {
-					$user->addGroup($wikiGroup);
+			$group_mapping = $wgOAuth2Client['configuration']['group_mapping'];
+			if ($group_as_power_of_two) {
+				assert(is_integer($group), 'Expected group id as integer, but got type ' . gettype($group));
+				// Convert group id to bits
+				foreach($group_mapping as $mapped_group => $wikiGroup) {
+					// Bit-compare the user group with the mapped groups
+					if (($group & $mapped_group > 0) && (!in_array($wikiGroup, $user->getGroups()))) {
+						$user->addGroup($wikiGroup);
+					}
+				}
+			} else {
+				// Lookup if this group is mapped
+				if (isset($group_mapping[$group])) {
+					$wikiGroup = $group_mapping[$group];
+					if (!in_array($wikiGroup, $user->getGroups())) {
+						$user->addGroup($wikiGroup);
+					}
 				}
 			}
 		}

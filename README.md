@@ -93,7 +93,7 @@ $wgOAuth2Client['configuration']['group'] = 'group.id'; // JSON path to group id
 $wgOAuth2Client['configuration']['group_mapping'] = array(
 	1 => 'sysop'
 ); // Give users with group id 1 the mediawiki group 'sysop'
-
+$wgOAuth2Client['configuration']['group_id_as_sum_of_powers_of_two'] = True; // group_id from oauth server are given as power of two. The given group.id is the sum of all groups the user is in. (e.g. group 8 and 16 returns "group id" 24)
 ```
 
 Optional Authorization Callback
