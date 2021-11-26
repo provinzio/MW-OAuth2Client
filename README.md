@@ -11,6 +11,10 @@ Clone this repo into the extension directory. In the cloned directory, run 'git 
 Finally, run [composer](https://getcomposer.org/) in /vendors/oauth2-client to install the library dependency.
 
 ```
+git clone https://github.com/provinzio/MW-OAuth2Client.git
+cd MW-OAuth2Client
+git submodule update --init
+cd vendors/oauth2-client
 composer install
 ```
 
