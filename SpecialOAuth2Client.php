@@ -181,13 +181,21 @@ class SpecialOAuth2Client extends SpecialPage {
 			die();
 		}
 		if (isset($wgOAuth2Client['configuration']['real_name'])) {
-			$real_name = $response['user'][$wgOAuth2Client['configuration']['real_name']];
-		} elseif (isset($wgOAuth2Client['configuration']['first_name']) && isset($wgOAuth2Client['configuration']['last_name'])) {
-			$real_name = $response['user'][$wgOAuth2Client['configuration']['first_name']] . ' ' . $response['user'][$wgOAuth2Client['configuration']['last_name']];
-		} else {
-			$real_name = $username;
+			$real_name = JsonHelper::extractValue($response, $wgOAuth2Client['configuration']['real_name']);
+		} elseif (isset($wgOAuth2Client['configuration']['first_name']) || isset($wgOAuth2Client['configuration']['last_name'])) {
+			if (isset($wgOAuth2Client['configuration']['first_name'])) {
+				$first_name = JsonHelper::extractValue($response, $wgOAuth2Client['configuration']['first_name']);
+			} else {
+				$first_name = '';
+			}
+			if (isset($wgOAuth2Client['configuration']['last_name'])) {
+				$last_name = JsonHelper::extractValue($response, $wgOAuth2Client['configuration']['last_name']);
+			} else {
+				$last_name = '';
+			}
+			$real_name =  implode(' ', [$first_name, $last_name]);
 		}
-		$user->setRealName($real_name);
+		$user->setRealName($real_name ?? $username);
 		$user->setEmail($email);
 		$user->load();
 		if ( !( $user instanceof User && $user->getId() ) ) {
