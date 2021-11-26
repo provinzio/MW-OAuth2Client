@@ -18,13 +18,13 @@ composer install
 
 Add the following line to your LocalSettings.php file.
 
-```
+```php
 wfLoadExtension( 'MW-OAuth2Client' );
 ```
 
 Required settings to be added to LocalSettings.php
 
-```
+```php
 $wgOAuth2Client['client']['id']     = ''; // The client ID assigned to you by the provider
 $wgOAuth2Client['client']['secret'] = ''; // The client secret assigned to you by the provider
 
@@ -43,7 +43,7 @@ If the properties you want from your JSON object are nested, you can use periods
 
 For example, if user JSON is
 
-```
+```json
 {
     "user": {
         "username": "my username",
@@ -54,7 +54,7 @@ For example, if user JSON is
 
 Then your JSON path configuration should be these
 
-```
+```php
 $wgOAuth2Client['configuration']['username'] = 'user.username'; // JSON path to username
 $wgOAuth2Client['configuration']['email'] = 'user.email'; // JSON path to email
 ```
@@ -63,11 +63,11 @@ You can see [Json Helper Test case](./tests/phpunit/JsonHelperTest.php) for more
 
 The **user's real name** will be set to the username by default.
 Depending on what you get from your backend, you may also want to configure:
-```
+```php
 $wgOAuth2Client['configuration']['real_name'] = 'realname'; // JSON path to real name
 ```
 or:
-```
+```php
 $wgOAuth2Client['configuration']['first_name'] = 'first_name'; // JSON path to first name
 $wgOAuth2Client['configuration']['last_name'] = 'last_name'; // JSON path to last name
 ```
@@ -81,7 +81,7 @@ http://your.wiki.domain/path/to/wiki/Special:OAuth2Client/callback
 
 Optional further configuration
 
-```
+```php
 $wgOAuth2Client['configuration']['http_bearer_token'] = 'Bearer'; // Token to use in HTTP Authentication
 $wgOAuth2Client['configuration']['query_parameter_token'] = 'auth_token'; // query parameter to use
 $wgOAuth2Client['configuration']['scopes'] = 'read_citizen_info'; //Permissions
@@ -95,7 +95,7 @@ Optional Authorization Callback
 
 Provide a callback and error message in the configuration that evaluates a conditional based upon the result of some business logic provided by the authorization endpoint response.
 
-```
+```php
 $wgOAuth2Client['configuration']['authz_callback'] = function($response) {
   if ($response['property']) {
     return true;
