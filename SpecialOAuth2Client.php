@@ -207,31 +207,45 @@ class SpecialOAuth2Client extends SpecialPage {
 		}
 		$user->setToken();
 
-		if (isset($wgOAuth2Client['configuration']['group_id_as_sum_of_powers_of_two'])) {
-			$group_as_power_of_two = $wgOAuth2Client['configuration']['group_id_as_sum_of_powers_of_two'];
-		} else {
-			$group_as_power_of_two = False;
-		}
-
 		// Assign group if configured
-		if (isset($wgOAuth2Client['configuration']['group']) && isset($wgOAuth2Client['configuration']['group_mapping'])) {
-			$group = JsonHelper::extractValue($response, $wgOAuth2Client['configuration']['group']);
+		if (isset($wgOAuth2Client['configuration']['group_mapping'])) {
 			$group_mapping = $wgOAuth2Client['configuration']['group_mapping'];
-			if ($group_as_power_of_two) {
-				assert(is_integer($group), 'Expected group id as integer, but got type ' . gettype($group));
-				// Convert group id to bits
-				foreach($group_mapping as $mapped_group => $wikiGroup) {
-					// Bit-compare the user group with the mapped groups
-					if (($group & $mapped_group > 0) && (!in_array($wikiGroup, $user->getGroups()))) {
-						$user->addGroup($wikiGroup);
-					}
-				}
-			} else {
-				// Lookup if this group is mapped
+
+			// group . Value is a single group
+			if (isset($wgOAuth2Client['configuration']['group'])) {
+				$group = JsonHelper::extractValue($response, $wgOAuth2Client['configuration']['group']);
 				if (isset($group_mapping[$group])) {
 					$wikiGroup = $group_mapping[$group];
 					if (!in_array($wikiGroup, $user->getGroups())) {
 						$user->addGroup($wikiGroup);
+					}
+				}
+			}
+
+			// groups . Value is an array of groups
+			if (isset($wgOAuth2Client['configuration']['groups'])) {
+				$groups = JsonHelper::extractValue($response, $wgOAuth2Client['configuration']['groups']);
+				foreach ($groups as $group) {
+					if (isset($group_mapping[$group])) {
+						$wikiGroup = $group_mapping[$group];
+						if (!in_array($wikiGroup, $user->getGroups())) {
+							$user->addGroup($wikiGroup);
+						}
+					}
+				}
+			}
+
+			// group_id . Value is the sum of group_ids
+			//          . group_ids are of the kind 2^x
+			if (isset($wgOAuth2Client['configuration']['group_id'])) {
+				$group_id = JsonHelper::extractValue($response, $wgOAuth2Client['configuration']['group_id']);
+				assert(is_integer($group_id), 'Expected group id as integer, but got type ' . gettype($group_id));
+				foreach ($group_mapping as $mapped_group => $wikiGroup) {
+					// Bit-compare the user group with the mapped groups
+					if ($group_id & $mapped_group > 0) {
+						if (!in_array($wikiGroup, $user->getGroups())) {
+							$user->addGroup($wikiGroup);
+						}
 					}
 				}
 			}

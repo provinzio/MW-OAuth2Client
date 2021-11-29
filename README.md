@@ -93,11 +93,12 @@ $wgOAuth2Client['configuration']['scopes'] = 'read_citizen_info'; //Permissions
 $wgOAuth2Client['configuration']['service_name'] = 'Citizen Registry'; // the name of your service
 $wgOAuth2Client['configuration']['service_login_link_text'] = 'Login with StarMade'; // the text of the login link
 
-$wgOAuth2Client['configuration']['group'] = 'group.id'; // JSON path to group id, if set group_mapping is also required
-$wgOAuth2Client['configuration']['group_mapping'] = array(
-	1 => 'sysop'
-); // Give users with group id 1 the mediawiki group 'sysop'
-$wgOAuth2Client['configuration']['group_id_as_sum_of_powers_of_two'] = True; // group_id from oauth server are given as power of two. The given group.id is the sum of all groups the user is in. (e.g. group 8 and 16 returns "group id" 24)
+$wgOAuth2Client['configuration']['group'] = 'group'; // JSON path to group, if set group_mapping is also required
+$wgOAuth2Client['configuration']['groups'] = 'groups'; // JSON path to array of groups, if set group_mapping is also required
+$wgOAuth2Client['configuration']['group_id'] = 'group_id'; // JSON path to group_id, if set group_mapping is also required
+$wgOAuth2Client['configuration']['group_mapping'] = [
+	1 => 'sysop',  // Give users with group 1 the mediawiki group 'sysop'
+];
 ```
 
 Optional Authorization Callback
