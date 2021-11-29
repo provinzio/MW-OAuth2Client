@@ -28,7 +28,7 @@ class SpecialOAuth2Client extends SpecialPage {
 	 *
 	 * $wgOAuth2Client['client']['id']
 	 * $wgOAuth2Client['client']['secret']
-	 * //$wgOAuth2Client['client']['callback_url'] // extension should know
+	 * //$wgOAuth2Client['client']['redirect_uri'] // extension should know
 	 *
 	 * $wgOAuth2Client['configuration']['authorize_endpoint']
 	 * $wgOAuth2Client['configuration']['access_token_endpoint']
